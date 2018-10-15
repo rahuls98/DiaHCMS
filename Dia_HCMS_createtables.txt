@@ -1,0 +1,84 @@
+/*  1  */
+/* updated at the end of the day, stored in variables until then */
+create table PATIENT(DATE date not null,
+                    BS_AM float not null,
+                    FOOD varchar(1) not null,
+                    MEDS varchar(1) not null,
+                    PE varchar(1) not null,
+                    BS_PM float not null,
+                    BMI float,
+                    PRIMARY KEY(DATE));
+
+/*  2  */
+/*make  dictionary at the start of the day with keys as MED_ID and values y/n. If any value no then update MEDS as 'n'*/
+/*MEDICATION is thus a static table with list of medicines to be taken everyday*/
+create table MEDICATION(NAME varchar(20) not null,
+                        TIME time not null,
+                        QUANTITY varchar(10) not null,
+                        MED_ID varchar(10) not null,
+                        PRIMARY KEY(MED_ID));
+                        /*TAKEN_STATUS varchar(1) not null,*/
+
+/*  3  */
+/* updated every time bolus shot is taken */
+create table INSULIN(I_ID varchar(10) not null,
+                    TIME time not null,
+                    AMOUNT float not null,
+                    BS_PRE float,
+                    PRIMARY KEY(I_ID));
+
+/*  4  */
+/* updated with respect to other tables when certain time period is completed*/
+/* eg: ask user 1h after intended meal time. If meal skipped, make entry into ANOMALY table first with A_ID = MEAL_ID*/
+create table ANOMALY(A_ID varchar(10) not null,
+                    TIME time not null,
+                    DATE date not null,
+                    BS float,
+                    PRIMARY KEY(A_ID),
+                    constraint an_FK1 FOREIGN KEY(DATE) REFERENCES PATIENT(DATE) ON UPDATE CASCADE ON DELETE CASCADE);
+
+/*  5  */
+/* Static food table */
+/* Pre planned meals*/
+create table MEAL_PLAN(PL_MEAL_ID varchar(10) not null,
+                  TIME time not null,
+                  DATE date not null,
+                  NUTRITION float not null,
+                  PRIMARY KEY(PL_MEAL_ID));
+
+/*  6  */
+/* dynamic food table */
+/* updated post meal */
+/* if any TAKEN_STATUS = 'n' at the end of the day then set MEDS = 'n'*/
+/*also set ANOMALY table*/
+create table FOOD_TAKEN(TK_MEAL_ID varchar(10) not null,
+                        BS_PRE float not null,
+                        TAKEN_STATUS varchar(1) not null,
+                        BOLUS_ID varchar(10) not null,
+                        constraint food_FK1 FOREIGN KEY(BOLUS_ID) REFERENCES INSULIN(I_ID) ON UPDATE CASCADE ON DELETE CASCADE,
+                        constraint food_FK2 FOREIGN KEY(TK_MEAL_ID) REFERENCES MEAL_PLAN(PL_MEAL_ID) ON UPDATE CASCADE ON DELETE CASCADE);
+
+/*  7  */
+/* static pe table*/
+/* pre-planned*/
+create table PLANNED_PE(PL_ID varchar(10) not null,
+                        TYPE varchar(20) not null,
+                        DAY varchar(10) not null,
+                        PRIMARY KEY(PL_ID));
+
+/*  8  */
+/*dynamic pe table updated after workout*/
+/* if total duration not > 30 mins, set PE as 'n'*/
+create table PERFORMED_PE(PE_ID varchar(10) not null,
+                          DATE date not null,
+                          DURATION int not null,
+                          BS_PRE float not null,
+                          BS_POST float not null,
+                          BOLUS_ID varchar(10) not null,
+                          SNACK_ID varchar(10) not null,
+                          ANOMALY_ID varchar(10),
+                          PRIMARY KEY(PE_ID),
+                          constraint pe_FK1 FOREIGN KEY(BOLUS_ID) REFERENCES INSULIN(I_ID) ON UPDATE CASCADE ON DELETE CASCADE,
+                          constraint pe_FK2 FOREIGN KEY(ANOMALY_ID) REFERENCES ANOMALY(A_ID) ON UPDATE CASCADE ON DELETE CASCADE,
+                          constraint pe_FK3 FOREIGN KEY(DATE) REFERENCES PATIENT(DATE) ON UPDATE CASCADE ON DELETE CASCADE,
+                          constraint pe_FK4 FOREIGN KEY(SNACK_ID) REFERENCES MEAL_PLAN(PL_MEAL_ID) ON UPDATE CASCADE ON DELETE CASCADE);

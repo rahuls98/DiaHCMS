@@ -1,0 +1,128 @@
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| DiaHCMS            |
+| college            |
+| company            |
+| library            |
+| movie              |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+9 rows in set (0.00 sec)
+
+mysql> use DiaHCMS;
+Database changed
+mysql> show tables;
++-------------------+
+| Tables_in_DiaHCMS |
++-------------------+
+| ANOMALY           |
+| FOOD_TAKEN        |
+| INSULIN           |
+| MEAL_PLAN         |
+| MEDICATION        |
+| PATIENT           |
+| PERFORMED_PE      |
+| PLANNED_PE        |
++-------------------+
+8 rows in set (0.00 sec)
+
+mysql> desc PATIENT;
++-------+------------+------+-----+---------+-------+
+| Field | Type       | Null | Key | Default | Extra |
++-------+------------+------+-----+---------+-------+
+| DATE  | date       | NO   | PRI | NULL    |       |
+| BS_AM | float      | NO   |     | NULL    |       |
+| FOOD  | varchar(1) | NO   |     | NULL    |       |
+| MEDS  | varchar(1) | NO   |     | NULL    |       |
+| PE    | varchar(1) | NO   |     | NULL    |       |
+| BS_PM | float      | NO   |     | NULL    |       |
+| BMI   | float      | YES  |     | NULL    |       |
++-------+------------+------+-----+---------+-------+
+7 rows in set (0.01 sec)
+
+mysql> desc MEDICATION;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| NAME     | varchar(20) | NO   |     | NULL    |       |
+| TIME     | time        | NO   |     | NULL    |       |
+| QUANTITY | varchar(10) | NO   |     | NULL    |       |
+| MED_ID   | varchar(10) | NO   | PRI | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> desc INSULIN;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| I_ID   | varchar(10) | NO   | PRI | NULL    |       |
+| TIME   | time        | NO   |     | NULL    |       |
+| AMOUNT | float       | NO   |     | NULL    |       |
+| BS_PRE | float       | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> desc ANOMALY;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| A_ID  | varchar(10) | NO   | PRI | NULL    |       |
+| TIME  | time        | NO   |     | NULL    |       |
+| DATE  | date        | NO   | MUL | NULL    |       |
+| BS    | float       | YES  |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> desc MEAL_PLAN;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| PL_MEAL_ID | varchar(10) | NO   | PRI | NULL    |       |
+| TIME       | time        | NO   |     | NULL    |       |
+| DATE       | date        | NO   |     | NULL    |       |
+| NUTRITION  | float       | NO   |     | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> desc FOOD_TAKEN;
++--------------+-------------+------+-----+---------+-------+
+| Field        | Type        | Null | Key | Default | Extra |
++--------------+-------------+------+-----+---------+-------+
+| TK_MEAL_ID   | varchar(10) | NO   | MUL | NULL    |       |
+| BS_PRE       | float       | NO   |     | NULL    |       |
+| TAKEN_STATUS | varchar(1)  | NO   |     | NULL    |       |
+| BOLUS_ID     | varchar(10) | NO   | MUL | NULL    |       |
++--------------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> desc PLANNED_PE;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| PL_ID | varchar(10) | NO   | PRI | NULL    |       |
+| TYPE  | varchar(20) | NO   |     | NULL    |       |
+| DAY   | varchar(10) | NO   |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> desc PERFORMED_PE;
++------------+-------------+------+-----+---------+-------+
+| Field      | Type        | Null | Key | Default | Extra |
++------------+-------------+------+-----+---------+-------+
+| PE_ID      | varchar(10) | NO   | PRI | NULL    |       |
+| DATE       | date        | NO   | MUL | NULL    |       |
+| DURATION   | int(11)     | NO   |     | NULL    |       |
+| BS_PRE     | float       | NO   |     | NULL    |       |
+| BS_POST    | float       | NO   |     | NULL    |       |
+| BOLUS_ID   | varchar(10) | NO   | MUL | NULL    |       |
+| SNACK_ID   | varchar(10) | NO   | MUL | NULL    |       |
+| ANOMALY_ID | varchar(10) | YES  | MUL | NULL    |       |
++------------+-------------+------+-----+---------+-------+
+8 rows in set (0.01 sec)
+
+mysql> exit;
