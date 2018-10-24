@@ -1,0 +1,117 @@
+mysql> use DiaHCMS;
+Database changed
+mysql> create table PATIENT(DATE date not null, BS_AM float not null, FOOD varchar(1) not null, MEDS varchar(1) not null, PE varchar(1) not null, BS_PM float not null, BMI float not null, PRIMARY KEY(DATE));
+Query OK, 0 rows affected (0.07 sec)
+
+mysql> create table MEDICATION(MED_ID varchar(10) not null, NAME varchar(20) not null, TIME time not null, QUANTITY varchar(15) not null, constraint MED_PK PRIMARY KEY(NAME,TIME));
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> create table INSULIN(I_ID varchar(10) not null, DATE date not null, TIME time not null, AMOUNT float not null, BS_PRE float not null, constraint I_PK PRIMARY KEY(DATE,TIME), foreign key(DATE) references PATIENT(DATE));
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> create table ANOMALY(A_ID varchar(10) not null, DATE date not null, TIMe time not null, BS float not null, DESCRIPTION varchar(150), constraint A_PK PRIMARY KEY(DATE,TIME), foreign key(DATE) references PATIENT(DATE));
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> create table PE_PLAN(PE_ID varchar(10) not null, TYPE varchar(15) not null, PRIMARY KEY(PE_ID));
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> create table PE_DONE(PE_ID varchar(10) not null, DATE date not null, TIME time not null, DURATION int not null, constraint PE_PK PRIMARY KEY(DATE,TIME), foreign key(DATE) references PATIENT(DATE), foreign key(PE_ID) references PE_PLAN(PE_ID));
+Query OK, 0 rows affected (0.13 sec)
+
+mysql> create table MEAL_PLAN(MEAL_ID varchar(10) not null, TIME time not null, NUTRITION float not null, PRIMARY KEY(MEAL_ID));
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> create table MEAL_TAKEN(MEAL_ID varchar(10) not null, BS_PRE float not null, BOLUS_ID varchar(10) not null, TAKEN_STATUS varchar(1) not null, PRIMARY KEY(MEAL_ID), foreign key(MEAL_ID) references MEAL_PLAN(MEAL_ID));
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> desc PATIENT;
++-------+------------+------+-----+---------+-------+
+| Field | Type       | Null | Key | Default | Extra |
++-------+------------+------+-----+---------+-------+
+| DATE  | date       | NO   | PRI | NULL    |       |
+| BS_AM | float      | NO   |     | NULL    |       |
+| FOOD  | varchar(1) | NO   |     | NULL    |       |
+| MEDS  | varchar(1) | NO   |     | NULL    |       |
+| PE    | varchar(1) | NO   |     | NULL    |       |
+| BS_PM | float      | NO   |     | NULL    |       |
+| BMI   | float      | NO   |     | NULL    |       |
++-------+------------+------+-----+---------+-------+
+7 rows in set (0.00 sec)
+
+mysql> desc MEDICATION;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| MED_ID   | varchar(10) | NO   |     | NULL    |       |
+| NAME     | varchar(20) | NO   | PRI | NULL    |       |
+| TIME     | time        | NO   | PRI | NULL    |       |
+| QUANTITY | varchar(15) | NO   |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> desc INSULIN;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| I_ID   | varchar(10) | NO   |     | NULL    |       |
+| DATE   | date        | NO   | PRI | NULL    |       |
+| TIME   | time        | NO   | PRI | NULL    |       |
+| AMOUNT | float       | NO   |     | NULL    |       |
+| BS_PRE | float       | NO   |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> desc ANOMALY;
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| A_ID        | varchar(10)  | NO   |     | NULL    |       |
+| DATE        | date         | NO   | PRI | NULL    |       |
+| TIMe        | time         | NO   | PRI | NULL    |       |
+| BS          | float        | NO   |     | NULL    |       |
+| DESCRIPTION | varchar(150) | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+5 rows in set (0.00 sec)
+
+mysql> desc PE_PLAN;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| PE_ID | varchar(10) | NO   | PRI | NULL    |       |
+| TYPE  | varchar(15) | NO   |     | NULL    |       |
++-------+-------------+------+-----+---------+-------+
+2 rows in set (0.00 sec)
+
+mysql> desc PE_DONE;
++----------+-------------+------+-----+---------+-------+
+| Field    | Type        | Null | Key | Default | Extra |
++----------+-------------+------+-----+---------+-------+
+| PE_ID    | varchar(10) | NO   | MUL | NULL    |       |
+| DATE     | date        | NO   | PRI | NULL    |       |
+| TIME     | time        | NO   | PRI | NULL    |       |
+| DURATION | int(11)     | NO   |     | NULL    |       |
++----------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> desc MEAL_PLAN;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| MEAL_ID   | varchar(10) | NO   | PRI | NULL    |       |
+| TIME      | time        | NO   |     | NULL    |       |
+| NUTRITION | float       | NO   |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> desc MEAL_TAKEN;
++--------------+-------------+------+-----+---------+-------+
+| Field        | Type        | Null | Key | Default | Extra |
++--------------+-------------+------+-----+---------+-------+
+| MEAL_ID      | varchar(10) | NO   | PRI | NULL    |       |
+| BS_PRE       | float       | NO   |     | NULL    |       |
+| BOLUS_ID     | varchar(10) | NO   |     | NULL    |       |
+| TAKEN_STATUS | varchar(1)  | NO   |     | NULL    |       |
++--------------+-------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> exit
