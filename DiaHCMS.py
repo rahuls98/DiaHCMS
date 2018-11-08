@@ -9,7 +9,7 @@ conn = mysql.connector.connect(host="localhost",user="",password="",database="")
 curs = conn.cursor()
 
 def setBackground(root):
-    img = ImageTk.PhotoImage(Image.open("/Users/rahuls98/Documents/Dia_stuff/10.jpg"))
+    img = ImageTk.PhotoImage(Image.open("../10.jpg"))
     label = ttk.Label(root,image = img)
     label.image = img
     label.grid(row=0,column=0,columnspan=20,rowspan=20)
