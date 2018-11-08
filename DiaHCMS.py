@@ -4,7 +4,8 @@ import tkinter.messagebox
 from PIL import ImageTk,Image
 import datetime
 import mysql.connector
-conn = mysql.connector.connect(host="localhost",user="your_user",password="your_pwd",database="your_db")
+import MySQLdb
+conn = mysql.connector.connect(host="localhost",user="",password="",database="")
 curs = conn.cursor()
 
 def setBackground(root):
@@ -33,15 +34,15 @@ def BSSubWindow(num):
     bottomFrame = Frame(BS_sub_window)
     bottomFrame.grid(row=18,column=0)
 
-    taken_var = IntVar()
+    #taken_var = IntVar()
     bs_entry_var = StringVar()
 
-    taken_status = ttk.Checkbutton(topFrame, text = "Checked", variable = taken_var)
-    taken_status.grid(row=0,column=1,sticky='NSWE')
+    #taken_status = ttk.Checkbutton(topFrame, text = "Checked", variable = taken_var)
+    #taken_status.grid(row=0,column=1,sticky='NSWE')
     bs_amount_label = ttk.Label(topFrame, text = "Enter BS amount: ")
-    bs_amount_label.grid(row=1,column=1,sticky='NSWE')
+    bs_amount_label.grid(row=0,column=1,sticky='NSWE')
     bs_amount_entry = ttk.Entry(topFrame, font=('Baskerville',20))
-    bs_amount_entry.grid(row=2,column=1,sticky='NSWE')
+    bs_amount_entry.grid(row=1,column=1,sticky='NSWE')
 
     def BS_submit():
         if bs_amount_entry.get() == '':
@@ -93,13 +94,13 @@ def foodSubWindow(num):
     setStyle(food_sub_window)
 
     topFrame = Frame(food_sub_window)
-    topFrame.grid(row=5,column=0)
+    topFrame.grid(row=4,column=0)
     bottomFrame = Frame(food_sub_window)
     bottomFrame.grid(row=18,column=0)
 
-    taken_var = IntVar()
-    taken_status = ttk.Checkbutton(topFrame, text = "Taken", variable = taken_var)
-    taken_status.grid(row=0,column=1,sticky='NSWE')
+    #taken_var = IntVar()
+    #taken_status = ttk.Checkbutton(topFrame, text = "Taken", variable = taken_var)
+    #taken_status.grid(row=0,column=1,sticky='NSWE')
     bs_amount_label = ttk.Label(topFrame, text = "Enter BS amount: ")
     bs_amount_label.grid(row=1,column=1,sticky='NSWE')
     bs_amount_entry = ttk.Entry(topFrame, font=('Baskerville',20))
@@ -130,13 +131,14 @@ def foodSubWindow(num):
                 curs.execute(ins_table_entry, (next_id,ins_amount_entry.get(),bs_amount_entry.get()))
 
                 food_table_entry = 'INSERT INTO MEAL_TAKEN VALUES(%s,%s,%s,%s)'
-                input_val = (mealid,bs_amount_entry.get(),next_id,taken_var.get())
+                input_val = (mealid,bs_amount_entry.get(),next_id,1)
                 curs.execute(food_table_entry, input_val)
                 conn.commit()
                 tkinter.messagebox.showinfo('DONE!',"Table Updated!")
-                BS_sub_window.destroy()
-        except:
+                food_sub_window.destroy()
+        except mysql.connector.Error as err:
             tkinter.messagebox.showinfo('ERROR!',"Duplicate entry!")
+            food_sub_window.destroy()
 
     back = ttk.Button(bottomFrame, text="BACK",command=lambda:food_sub_window.destroy())
     back.grid(row=0,column=1,sticky='NSEW',ipady=10, ipadx=20)
@@ -280,14 +282,14 @@ def PESubWindow(num):
     bottomFrame = Frame(pe_sub_window)
     bottomFrame.grid(row=18,column=0)
 
-    date_label = ttk.Label(topFrame, text = "Enter Date: ", font=('Baskerville',20))
-    date_label.grid(row=1,column=1,sticky='NSWE')
-    date_entry = ttk.Entry(topFrame, font=('Baskerville',20))
-    date_entry.grid(row=2,column=1,sticky='NSWE')
+    #date_label = ttk.Label(topFrame, text = "Enter Date: ", font=('Baskerville',20))
+    #date_label.grid(row=1,column=1,sticky='NSWE')
+    #date_entry = ttk.Entry(topFrame, font=('Baskerville',20))
+    #date_entry.grid(row=2,column=1,sticky='NSWE')
     dur_label = ttk.Label(topFrame, text = "Enter Duration: ", font=('Baskerville',20))
-    dur_label.grid(row=3,column=1,sticky='NSWE')
+    dur_label.grid(row=2,column=1,sticky='NSWE')
     dur_entry = ttk.Entry(topFrame, font=('Baskerville',20))
-    dur_entry.grid(row=4,column=1,sticky='NSWE')
+    dur_entry.grid(row=3,column=1,sticky='NSWE')
 
     def pe_submit():
         pe_plan = "SELECT * FROM PE_PLAN"
@@ -345,26 +347,26 @@ def anomalyWindow():
     setBackground(anomaly_window)
 
     topFrame = Frame(anomaly_window)
-    topFrame.grid(row=8,column=0)
+    topFrame.grid(row=4,column=0)
     bottomFrame = Frame(anomaly_window)
     bottomFrame.grid(row=18,column=0)
 
     bs_amount_label = ttk.Label(topFrame, text = "Enter BS amount: ", font=('Baskerville',20))
-    bs_amount_label.grid(row=1,column=1,sticky='NSWE')
+    bs_amount_label.grid(row=0,column=1,sticky='NSWE')
     bs_amount_entry = ttk.Entry(topFrame, font=('Baskerville',20))
-    bs_amount_entry.grid(row=2,column=1,sticky='NSWE')
-    time_label = ttk.Label(topFrame, text = "Enter time: ", font=('Baskerville',20))
-    time_label.grid(row=3,column=1,sticky='NSWE')
-    time_entry = ttk.Entry(topFrame, font=('Baskerville',20))
-    time_entry.grid(row=4,column=1,sticky='NSWE')
+    bs_amount_entry.grid(row=1,column=1,sticky='NSWE')
+    #time_label = ttk.Label(topFrame, text = "Enter time: ", font=('Baskerville',20))
+    #time_label.grid(row=3,column=1,sticky='NSWE')
+    #time_entry = ttk.Entry(topFrame, font=('Baskerville',20))
+    #time_entry.grid(row=4,column=1,sticky='NSWE')
     desc_label = ttk.Label(topFrame, text = "Enter description: ", font=('Baskerville',20))
-    desc_label.grid(row=5,column=1,sticky='NSWE')
+    desc_label.grid(row=2,column=1,sticky='NSWE')
     desc_entry = ttk.Entry(topFrame, font=('Baskerville',20))
-    desc_entry.grid(row=6,column=1,sticky='NSWE')
+    desc_entry.grid(row=3,column=1,sticky='NSWE')
 
 
     def anomaly_submit():
-        if bs_amount_entry.get()=='' or time_entry.get()=='' or desc_entry.get()=='':
+        if bs_amount_entry.get()=='' or desc_entry.get()=='':
             tkinter.messagebox.showinfo('ERROR!','Enter valid amount')
         else:
             last_ano_id = "SELECT * FROM ANOMALY ORDER BY A_ID DESC LIMIT 1"
@@ -393,22 +395,22 @@ def driveWindow():
     setBackground(drive_window)
 
     topFrame = Frame(drive_window)
-    topFrame.grid(row=8,column=0)
+    topFrame.grid(row=4,column=0)
     bottomFrame = Frame(drive_window)
     bottomFrame.grid(row=18,column=0)
 
     bs_amount_label = ttk.Label(topFrame, text = "Enter BS amount: ", font=('Baskerville',20))
-    bs_amount_label.grid(row=1,column=1,sticky='NSWE')
+    bs_amount_label.grid(row=0,column=1,sticky='NSWE')
     bs_amount_entry = ttk.Entry(topFrame, font=('Baskerville',20))
-    bs_amount_entry.grid(row=2,column=1,sticky='NSWE')
-    time_label = ttk.Label(topFrame, text = "Enter time: ", font=('Baskerville',20))
-    time_label.grid(row=3,column=1,sticky='NSWE')
-    time_entry = ttk.Entry(topFrame, font=('Baskerville',20))
-    time_entry.grid(row=4,column=1,sticky='NSWE')
+    bs_amount_entry.grid(row=1,column=1,sticky='NSWE')
+    #time_label = ttk.Label(topFrame, text = "Enter time: ", font=('Baskerville',20))
+    #time_label.grid(row=3,column=1,sticky='NSWE')
+    #time_entry = ttk.Entry(topFrame, font=('Baskerville',20))
+    #time_entry.grid(row=4,column=1,sticky='NSWE')
     msg_label = ttk.Label(topFrame, text = "Message: ", font=('Baskerville',20))
-    msg_label.grid(row=5,column=1,sticky='NSWE')
+    msg_label.grid(row=3,column=1,sticky='NSWE')
     desc_entry = ttk.Entry(topFrame, font=('Baskerville',20))
-    desc_entry.grid(row=6,column=1,sticky='NSWE')
+    desc_entry.grid(row=4,column=1,sticky='NSWE')
 
     def driveSubmit():
         pass
@@ -466,10 +468,13 @@ def medWindow():
         display.insert(END, item[1],item[2],' ')
 
     def onConfirm():
-        taken_update = ("UPDATE MEDICATION SET TAKEN_STATUS = 0 WHERE NAME = %s AND TIME = %s")
-        input_val = (selected_med[0],selected_med[1])
-        curs.execute(taken_update, input_val)
-        conn.commit()
+        if selected_med[0]=='def_name' and selected_med[1]=='def_time':
+            tkinter.messagebox.showinfo("Try again","Nothing selected")
+        else:
+            taken_update = ("UPDATE MEDICATION SET TAKEN_STATUS = 0 WHERE NAME = %s AND TIME = %s")
+            input_val = (selected_med[0],selected_med[1])
+            curs.execute(taken_update, input_val)
+            conn.commit()
 
     back = ttk.Button(bottomFrame, text="BACK",command=lambda:m_main_window.destroy())
     back.grid(row=1,column=1,sticky='NSEW',ipady=5)
@@ -545,7 +550,7 @@ def foodPlanSubWindow():
     setBackground(fp_sub_window)
 
     topFrame = Frame(fp_sub_window)
-    topFrame.grid(row=3,column=0)
+    topFrame.grid(row=4,column=0)
     bottomFrame = Frame(fp_sub_window)
     bottomFrame.grid(row=18,column=0)
 
@@ -553,8 +558,6 @@ def foodPlanSubWindow():
     fp_add.grid(row=1,column=1,sticky='NSEW',ipady=10, ipadx=50)
     fp_del = ttk.Button(topFrame, text = "DELETE",command=foodPlanDelWindow)
     fp_del.grid(row=2,column=1,sticky='NSEW',ipady=10, ipadx=50)
-    fp_change = ttk.Button(topFrame, text = "CHANGE")#,command=medPlanDelWindow)
-    fp_change.grid(row=3,column=1,sticky='NSEW',ipady=10, ipadx=50)
 
     back = ttk.Button(bottomFrame, text="BACK",command=lambda:fp_sub_window.destroy())
     back.grid(row=0,column=1,sticky='NSEW',ipady=10, ipadx=20)
@@ -654,7 +657,7 @@ def pePlanSubWindow():
     setBackground(pp_sub_window)
 
     topFrame = Frame(pp_sub_window)
-    topFrame.grid(row=3,column=0)
+    topFrame.grid(row=4,column=0)
     bottomFrame = Frame(pp_sub_window)
     bottomFrame.grid(row=18,column=0)
 
@@ -662,8 +665,6 @@ def pePlanSubWindow():
     pp_add.grid(row=1,column=1,sticky='NSEW',ipady=10, ipadx=50)
     pp_del = ttk.Button(topFrame, text = "DELETE", command=pePlanDelWindow)
     pp_del.grid(row=2,column=1,sticky='NSEW',ipady=10, ipadx=50)
-    pp_change = ttk.Button(topFrame, text = "CHANGE")#,command=medPlanDelWindow)
-    pp_change.grid(row=3,column=1,sticky='NSEW',ipady=10, ipadx=50)
 
     back = ttk.Button(bottomFrame, text="BACK",command=lambda:pp_sub_window.destroy())
     back.grid(row=0,column=1,sticky='NSEW',ipady=10, ipadx=20)
@@ -778,7 +779,20 @@ def medPlanAddWindow():
     quan_entry.grid(row=6,column=1,sticky='NSWE')
 
     def mp2_submit():
-        pass
+        if name_entry.get() == '' or time_entry.get() == '' or quan_entry.get() == '':
+            tkinter.messagebox.showinfo('ERROR!','Enter valid amount')
+        else:
+            last_med_ID = "SELECT * FROM MEDICATION ORDER BY MED_ID DESC LIMIT 1"
+            curs.execute(last_med_ID)
+            for item in curs:
+                last_two = int(item[0][2:]) + 1
+                next_id = 'ME' + str(last_two).zfill(2)
+
+            med_table_entry = "INSERT INTO MEDICATION VALUES(%s,%s,%s,%s,%s)"
+            curs.execute(med_table_entry, (next_id,name_entry.get(),time_entry.get(),quan_entry.get(),1))
+            conn.commit()
+            tkinter.messagebox.showinfo('DONE!',"Table Updated!")
+            mp2_sub_window.destroy()
 
     back = ttk.Button(bottomFrame, text="BACK",command=lambda:mp2_sub_window.destroy())
     back.grid(row=0,column=1,sticky='NSEW',ipady=10, ipadx=20)
@@ -794,7 +808,7 @@ def medPlanSubWindow():
     setBackground(mp_sub_window)
 
     topFrame = Frame(mp_sub_window)
-    topFrame.grid(row=3,column=0)
+    topFrame.grid(row=4,column=0)
     bottomFrame = Frame(mp_sub_window)
     bottomFrame.grid(row=18,column=0)
 
@@ -802,8 +816,6 @@ def medPlanSubWindow():
     mp_add.grid(row=1,column=1,sticky='NSEW',ipady=10, ipadx=50)
     mp_del = ttk.Button(topFrame, text = "DELETE",command=medPlanDelWindow)
     mp_del.grid(row=2,column=1,sticky='NSEW',ipady=10, ipadx=50)
-    mp_change = ttk.Button(topFrame, text = "CHANGE")#,command=medPlanDelWindow)
-    mp_change.grid(row=3,column=1,sticky='NSEW',ipady=10, ipadx=50)
 
     back = ttk.Button(bottomFrame, text="BACK",command=lambda:mp_sub_window.destroy())
     back.grid(row=0,column=1,sticky='NSEW',ipady=10, ipadx=20)
