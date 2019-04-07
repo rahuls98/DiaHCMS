@@ -1,0 +1,76 @@
+CREATE TRIGGER bs_oor AFTER UPDATE
+ON diahcms.PATIENT
+FOR EACH ROW
+BEGIN
+  DECLARE bsa_id VARCHAR(10);
+  DECLARE bs_am FLOAT;
+  SELECT CONCAT('BS', dayofmonth(curdate()), hour(curtime())) INTO @bsa_id;
+  SELECT BS_AM INTO @bs_am FROM diahcms.patient WHERE diahcms.patient.date=curdate();
+  CASE
+    WHEN new.bs_am<80 THEN
+      INSERT INTO diahcms.anomaly VALUES(@bsa_id,curdate(),curtime(),new.bs_am,'LOW BS');
+    WHEN new.bs_am>130 THEN
+      INSERT INTO diahcms.anomaly VALUES(@bsa_id,curdate(),curtime(),new.bs_am,'HIGH BS');
+  END CASE;
+END;
+
+
+CREATE PROCEDURE diahcms.getAnoID(OUT new_ano_id VARCHAR(10))
+BEGIN
+  DECLARE last_ano_id VARCHAR(10);
+  DECLARE last_two_digits VARCHAR(2);
+  DECLARE new_two_digits VARCHAR(2);
+  SELECT a_id INTO @last_ano_id FROM diahcms.anomaly ORDER BY a_id DESC LIMIT 1 ;
+  SELECT RIGHT(@last_ano_id,2)+1 INTO @last_two_digits;
+  SELECT LPAD(@last_two_digits,2,'0') INTO @new_two_digits;
+  SELECT CONCAT('AN',@new_two_digits) INTO @new_ano_id;
+END;
+
+
+SELECT CONCAT('AN', LP.ZF) FROM (
+  SELECT LPAD(LT.R,2,'0') as ZF FROM (
+    SELECT RIGHT(A.A_ID,2)+1 AS R FROM (
+      SELECT A_ID FROM ANOMALY ORDER BY A_ID DESC LIMIT 1)
+    AS A)
+  as LT)
+as LP;
+
+
+CREATE PROCEDURE DiaHCMS.getAnoID(OUT new_ano_id VARCHAR(10))
+BEGIN
+  SELECT CONCAT('AN', LP.ZF) INTO new_ano_id FROM (
+    SELECT LPAD(LT.R,2,'0') as ZF FROM (
+      SELECT RIGHT(A.A_ID,2)+1 AS R FROM (
+        SELECT A_ID FROM DiaHCMS.ANOMALY ORDER BY A_ID DESC LIMIT 1)
+      AS A)
+    as LT)
+  as LP;
+END;
+
+CREATE TRIGGER bsNotInRange AFTER UPDATE
+ON DiaHCMS.PATIENT
+FOR EACH ROW
+BEGIN
+  DECLARE bsa_id VARCHAR(10);
+  DECLARE bs_am FLOAT;
+  DECLARE bs_pm FLOAT;
+  CALL getAnoID(@bsa_id);
+  SELECT BS_AM INTO @bs_am FROM DiaHCMS.PATIENT WHERE DiaHCMS.PATIENT.DATE=CURDATE();
+  SELECT BS_PM INTO @bs_pm FROM DiaHCMS.PATIENT WHERE DiaHCMS.PATIENT.DATE=CURDATE();
+  CASE
+    WHEN NEW.bs_am<>OLD.bs_am AND NEW.bs_am<80 THEN
+      INSERT INTO DiaHCMS.ANOMALY VALUES(@bsa_id,curdate(),curtime(),new.bs_am,'LOW BS_AM');
+    WHEN NEW.bs_pm<>OLD.bs_pm AND NEW.bs_pm<90 THEN
+      INSERT INTO DiaHCMS.ANOMALY VALUES(@bsa_id,curdate(),curtime(),new.bs_pm,'LOW BS_PM');
+    WHEN NEW.bs_am<>OLD.bs_am AND NEW.bs_am>130 THEN
+      INSERT INTO DiaHCMS.ANOMALY VALUES(@bsa_id,curdate(),curtime(),new.bs_am,'HIGH BS_AM');
+    WHEN NEW.bs_pm<>OLD.bs_pm AND NEW.bs_pm>150 THEN
+      INSERT INTO DiaHCMS.ANOMALY VALUES(@bsa_id,curdate(),curtime(),new.bs_pm,'HIGH BS_PM');
+  END CASE;
+END;
+
+
+SELECT @next INTO @bsa_id;
+
+insert into patient values(curdate(),0,'N','N','N',0,0);
+/Users/rahuls98/Documents/DiaHCMS
