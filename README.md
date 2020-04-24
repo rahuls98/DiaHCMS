@@ -5,4 +5,15 @@ Adhering to strict routines everday can be difficult in the midst of tight sched
 
 ![Home](images/1_GUI_Main_page.png "Landing page")
 
-The application interacts with the patient my giving reminders about meal timings, medication,etc. , and also by taking the description of any anomalies in the patient’s health or routine as input. Using the MySQL relational database in the backend, the patient’s everyday activities and anomalies are stored, along with meal plans, Insulin dosages, and several other routine activities. The entries in the database are then used to generate a monthly report, that can be used by the doctor to assess the variation in the patient’s condition. This can further aid in providing suggestions for adapting to and controlling the condition.
+The application interacts with the patient my giving reminders about meal timings, medication,etc. , and also by taking the description of any anomalies in the patient’s health or routine as input. 
+
+![Meals](images/5_FOOD_GUI_Page.png "Meals info update")
+![Medication](images/7_Medication_plan.png "Medication plan")
+![Anomaly](images/13_Anomaly_update_done.png "Anomaly updation")
+
+Using the MySQL relational database in the backend, the patient’s everyday activities and anomalies are stored, along with meal plans, Insulin dosages, and several other routine activities. 
+
+![ERD](images/ERD.png "Entity relationship diagram")
+![Dataflow](images/Dataflow.png "Dataflow diagram")
+
+The entries in the database are then used to generate a monthly report, that can be used by the doctor to assess the variation in the patient’s condition. This can further aid in providing suggestions for adapting to and controlling the condition.
