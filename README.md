@@ -14,11 +14,9 @@ The application interacts with the patient my giving reminders about meal timing
 A MySQL relational database is used in the backend. 
 
 <kbd><img src="images/ERD.png" /></kbd>
-![ERD](images/ERD.png "Entity relationship diagram")
 
 The patient’s everyday activities and anomalies are stored, along with meal plans, Insulin dosages, and several other routine activities. 
 
-
-![Dataflow](images/Dataflow.png "Dataflow diagram")
+<kbd><img src="images/Dataflow.png" /></kbd>
 
 The entries in the database are then used to generate a monthly report, that can be used by the doctor to assess the variation in the patient’s condition. This can further aid in providing suggestions for adapting to and controlling the condition.
